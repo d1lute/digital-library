@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @RestController
 public class UserController {
@@ -18,9 +19,10 @@ public class UserController {
 	                                           @RequestParam String password,
 	                                           @RequestParam String email) {
 	        // 这里应该有一些验证逻辑
-
-	        String sql = "INSERT INTO users (username, password, email) VALUES (?, ?, ?)";
-	        int result = jdbcTemplate.update(sql, username, password, email);
+	    	BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+	    	String hashedPassword = passwordEncoder.encode(password);
+	        String sql = "INSERT INTO users (username, hashedPassword, email) VALUES (?, ?, ?)";
+	        int result = jdbcTemplate.update(sql, username, hashedPassword, email);
 
 	        if (result > 0) {
 	            return ResponseEntity.ok("User registered successfully");
