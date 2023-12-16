@@ -21,7 +21,7 @@ public class UserController {
 	        // 这里应该有一些验证逻辑
 	    	BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 	    	String hashedPassword = passwordEncoder.encode(password);
-	        String sql = "INSERT INTO users (username, hashedPassword, email) VALUES (?, ?, ?)";
+	        String sql = "INSERT INTO users (username, Password, email) VALUES (?, ?, ?)";
 	        int result = jdbcTemplate.update(sql, username, hashedPassword, email);
 
 	        if (result > 0) {
