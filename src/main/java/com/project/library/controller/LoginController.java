@@ -22,7 +22,7 @@ public class LoginController {
     public ResponseEntity<?> login(@PathVariable String userType, @RequestParam String username, @RequestParam String password) {
         String tableName;
 
-        // 根据 userType 参数选择不同的表
+        // Select different tables based on the userType parameter.
         if ("admin".equals(userType)) {
             tableName = "admin";
         } else if ("user".equals(userType)) {
@@ -41,33 +41,13 @@ public class LoginController {
         String storedPassword = storedPasswords.get(0);
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         if (passwordEncoder.matches(password, storedPassword)) {
-            // 登录成功
+            // Login successful.
             return ResponseEntity.ok().build();
         } else {
-            // 登录失败
+            // Login failed.
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid password");
         }
     }
 
-    private String hashPassword(String password) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-            byte[] hashedPassword = md.digest(password.getBytes());
-            return bytesToHex(hashedPassword);
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("Failed to hash password", e);
-        }
-    }
 
-    private static String bytesToHex(byte[] bytes) {
-        StringBuilder hexString = new StringBuilder();
-        for (byte b : bytes) {
-            String hex = Integer.toHexString(0xff & b);
-            if (hex.length() == 1) {
-                hexString.append('0');
-            }
-            hexString.append(hex);
-        }
-        return hexString.toString();
-    }
 }

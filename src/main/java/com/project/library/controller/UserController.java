@@ -18,10 +18,27 @@ public class UserController {
 	    public ResponseEntity<String> register(@RequestParam String username,
 	                                           @RequestParam String password,
 	                                           @RequestParam String email) {
-	        // 这里应该有一些验证逻辑
+	       
 	    	BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 	    	String hashedPassword = passwordEncoder.encode(password);
 	        String sql = "INSERT INTO users (username, Password, email) VALUES (?, ?, ?)";
+	        int result = jdbcTemplate.update(sql, username, hashedPassword, email);
+
+	        if (result > 0) {
+	            return ResponseEntity.ok("User registered successfully");
+	        } else {
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Registration failed");
+	        }
+	    }
+	    
+	    @PostMapping("/addAdmin")
+	    public ResponseEntity<String> addAdmin(@RequestParam String username,
+	                                           @RequestParam String password,
+	                                           @RequestParam String email) {
+	        
+	    	BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+	    	String hashedPassword = passwordEncoder.encode(password);
+	        String sql = "INSERT INTO admin (username, Password, email) VALUES (?, ?, ?)";
 	        int result = jdbcTemplate.update(sql, username, hashedPassword, email);
 
 	        if (result > 0) {
